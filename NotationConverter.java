@@ -1,0 +1,78 @@
+import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+public class NotationConverter {
+  private final StringStack opsStack;
+  private final StringQueue outQueue;
+  private final String[] expressionTokens;
+
+  public NotationConverter(String exp) throws Exception {
+    expressionTokens = getExpressionTokens(exp);
+    int capacity = expressionTokens.length;
+    opsStack = new StringStack(capacity);
+    outQueue = new StringQueue(capacity);
+  }
+
+  public StringQueue getPostFixNotation() throws Exception {
+    Pattern numPattern = Pattern.compile("^[0-9]");
+    Pattern opPattern = Pattern.compile("^[*/^+-]$");
+
+    for (String token : expressionTokens) {
+      if (token.equals("(")) {
+        opsStack.push(token);
+        continue;
+      }
+
+      if (numPattern.matcher(token).find()) {
+        outQueue.enqueue(token);
+        continue;
+      }
+
+      if (opPattern.matcher(token).find()) {
+        if (opsStack.isEmpty()) {
+          opsStack.push(token);
+          continue;
+        }
+        if (tableCheck(token, opsStack.getTop())) outQueue.enqueue(opsStack.pop());
+        if (opsStack.getTop().equals(token)) {
+          outQueue.enqueue(opsStack.pop());
+          opsStack.push(token);
+          continue;
+        }
+        opsStack.push(token);
+        continue;
+      }
+
+      while (!opsStack.getTop().equals("(")) outQueue.enqueue(opsStack.pop());
+      opsStack.pop();
+    }
+
+    while (!opsStack.isEmpty()) outQueue.enqueue(opsStack.pop());
+
+    return outQueue;
+  }
+
+  private static boolean tableCheck(String token, String topOfStack) {
+    Pattern timesDivisionPattern = Pattern.compile("^[*/^]$");
+    Pattern plusMinusPattern = Pattern.compile("^[()]$");
+    return switch (token) {
+      case "*", "/" -> timesDivisionPattern.matcher(topOfStack).find();
+      case "+", "-" -> !plusMinusPattern.matcher(topOfStack).find();
+      case ")" -> !topOfStack.equals(")");
+      default -> false; // "(" and "^"
+    };
+  }
+
+  private static String[] getExpressionTokens(String exp) {
+    String expression = exp.replaceAll("\\s+", "");
+    StringTokenizer st = new StringTokenizer(expression, "+-*/^()", true);
+    String[] result = new String[expression.length() - 1];
+
+    for (int i = 0; i < expression.length(); i++)
+      if (st.hasMoreTokens())
+        result[i] = st.nextToken();
+
+    return result;
+  }
+}

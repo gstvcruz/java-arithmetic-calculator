@@ -1,6 +1,6 @@
 public class StringQueue {
-  private String[] arr;
-  private int p_size; // physical size
+  private final String[] arr;
+  private final int p_size; // physical size
   private int l_size; // logical size
   private int head;   // first element pointer
   private int tail;   // last element pointer
