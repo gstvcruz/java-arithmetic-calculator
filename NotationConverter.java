@@ -65,8 +65,20 @@ public class NotationConverter {
     };
   }
 
-  private static String[] getExpressionTokens(String exp) {
+  private static String[] getExpressionTokens(String exp) throws Exception {
+    Pattern opPattern = Pattern.compile("[^0-9+\\-^/*()]+");
     String expression = exp.replaceAll("\\s+", "");
+
+    if (opPattern.matcher(expression).find()) throw new Exception("Invalid character entered.");
+
+    int sum = 0;
+    for (int i = 0; i < expression.length(); i++) {
+      char c = expression.charAt(i);
+      if (c == '(' || c == ')') sum++;
+    }
+
+    if (sum % 2 == 1) throw new Exception("Incorrect number of parentheses found.");
+
     StringTokenizer st = new StringTokenizer(expression, "+-*/^()", true);
     String[] result = new String[expression.length()];
 
