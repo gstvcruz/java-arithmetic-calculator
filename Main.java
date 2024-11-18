@@ -1,8 +1,8 @@
-import java.util.StringTokenizer;
-
 public class Main {
   public static void main(String[] args) throws Exception {
-    NotationConverter nc = new NotationConverter("10 + (2 * 3 - 4) ^ 2 / 4 + 6 * 2");
+    NotationConverter nc = new NotationConverter(args[0]);
     StringQueue postFixExp = nc.getPostFixNotation();
+    Calculator calculator = new Calculator(postFixExp);
+    System.out.println(calculator.getResult());
   }
 }

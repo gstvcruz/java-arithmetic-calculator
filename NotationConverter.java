@@ -1,5 +1,4 @@
 import java.util.StringTokenizer;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class NotationConverter {
@@ -19,6 +18,8 @@ public class NotationConverter {
     Pattern opPattern = Pattern.compile("^[*/^+-]$");
 
     for (String token : expressionTokens) {
+      if (token == null) break;
+
       if (token.equals("(")) {
         opsStack.push(token);
         continue;
@@ -35,7 +36,7 @@ public class NotationConverter {
           continue;
         }
         if (tableCheck(token, opsStack.getTop())) outQueue.enqueue(opsStack.pop());
-        if (opsStack.getTop().equals(token)) {
+        if (!opsStack.isEmpty() && opsStack.getTop().equals(token)) {
           outQueue.enqueue(opsStack.pop());
           opsStack.push(token);
           continue;
@@ -67,7 +68,7 @@ public class NotationConverter {
   private static String[] getExpressionTokens(String exp) {
     String expression = exp.replaceAll("\\s+", "");
     StringTokenizer st = new StringTokenizer(expression, "+-*/^()", true);
-    String[] result = new String[expression.length() - 1];
+    String[] result = new String[expression.length()];
 
     for (int i = 0; i < expression.length(); i++)
       if (st.hasMoreTokens())

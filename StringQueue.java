@@ -28,7 +28,7 @@ public class StringQueue {
   }
 
   public String dequeue() throws Exception {
-    if (l_size == 0) throw new Exception("No elements to remove.");
+    if (isEmpty()) throw new Exception("No elements to remove.");
     l_size--;
     if (head + 1 == p_size) {
       String e = arr[head];
@@ -36,5 +36,13 @@ public class StringQueue {
       return e;
     }
     return arr[head++];
+  }
+
+  public int size() {
+    return p_size;
+  }
+
+  public boolean isEmpty() {
+    return l_size == 0;
   }
 }

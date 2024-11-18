@@ -16,14 +16,14 @@ public class StringStack {
   }
 
   public String pop() throws Exception {
-    if (top == -1) throw new Exception("No elements to remove.");
+    if (isEmpty()) throw new Exception("No elements to remove.");
     String element = arr[top];
     arr[top--] = null;
     return element;
   }
 
   public String getTop() throws Exception {
-    if (top == -1) throw new Exception("Stack is empty.");
+    if (isEmpty()) throw new Exception("Stack is empty.");
     return arr[top];
   }
 
