@@ -1,25 +1,24 @@
 public class Calculator {
-  private final StringQueue outQueue;
-  private final StringStack outStack;
+  private final LinkedListQueue<String> queue;
+  private final LinkedListStack<String> stack = new LinkedListStack<>();
 
-  public Calculator(StringQueue outQueue) throws Exception {
-    this.outQueue = outQueue;
-    outStack = new StringStack(outQueue.size());
+  public Calculator(LinkedListQueue<String> queue) {
+    this.queue = queue;
   }
 
   public double getResult() throws Exception {
     double v1, v2 = 0;
     char op;
 
-    while(!outQueue.isEmpty()) {
-      String element = outQueue.dequeue();
+    while(!queue.isEmpty()) {
+      String element = queue.dequeue();
       try {
         Double.parseDouble(element);
-        outStack.push(element);
+        stack.push(element);
       } catch (NumberFormatException e) {
         op = element.charAt(0);
-        v2 = Double.parseDouble(outStack.pop());
-        v1 = Double.parseDouble(outStack.pop());
+        v2 = Double.parseDouble(stack.pop());
+        v1 = Double.parseDouble(stack.pop());
         Double result = switch (op) {
           case '+' -> v1 + v2;
           case '-' -> v1 - v2;
@@ -28,10 +27,10 @@ public class Calculator {
           case '^' -> Math.pow(v1, v2);
           default -> throw new IllegalStateException("Unexpected value: " + op);
         };
-        outStack.push(String.valueOf(result));
+        stack.push(String.valueOf(result));
       }
     }
 
-    return Double.parseDouble(outStack.pop());
+    return Double.parseDouble(stack.pop());
   }
 }

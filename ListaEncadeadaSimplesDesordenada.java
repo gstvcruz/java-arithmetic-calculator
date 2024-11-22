@@ -4,44 +4,44 @@ public class ListaEncadeadaSimplesDesordenada <X> implements Cloneable
 	{
 	    private X  info;
 	    private No prox;
-	    
+
 	    public No (X i, No p)
 	    {
 	        this.info=i;
 	        this.prox=p;
 	    }
-	    
+
 	    @SuppressWarnings("unused")
 		public No (X i)
 	    {
 	        this.info=i;
 	        this.prox=null;
 	    }
-	    
+
 	    public X getInfo ()
 	    {
 	        return this.info;
 	    }
-	    
+
 	    public No getProx ()
 	    {
 	        return this.prox;
 	    }
-	    
+
 	    @SuppressWarnings("unused")
 		public void setInfo (X i)
 	    {
 	        this.info=i;
 	    }
-	    
+
 	    public void setProx (No p)
 	    {
 	        this.prox=p;
 	    }
 	}
-	
+
 	private No primeiro;
-	
+
 	private No ultimo;
 
 	public ListaEncadeadaSimplesDesordenada ()
@@ -49,11 +49,11 @@ public class ListaEncadeadaSimplesDesordenada <X> implements Cloneable
 		this.primeiro = null;
 		this.ultimo = null;
 	}
-	
-	public void guardeNoInicio (X i) throws Exception
+
+	public void guardeNoInicio (X i) throws IllegalArgumentException
 	{
-		if (i==null) throw new Exception ("Informação ausente");
-		
+		if (i==null) throw new IllegalArgumentException("Informação ausente");
+
 		X copia;
 		if (i instanceof Cloneable)
 		    copia = new Clonador<X>().clone(i);
@@ -65,10 +65,10 @@ public class ListaEncadeadaSimplesDesordenada <X> implements Cloneable
 		if (this.ultimo == null)
 			this.ultimo = this.primeiro;
 	}
-	
-	public void guardeNoFinal (X i) throws Exception
+
+	public void guardeNoFinal (X i) throws IllegalArgumentException
 	{
-		if (i==null) throw new Exception ("Empty information");
+		if (i==null) throw new IllegalArgumentException("Informação ausente");
 
 		X copia;
 		if (i instanceof Cloneable)
@@ -87,22 +87,22 @@ public class ListaEncadeadaSimplesDesordenada <X> implements Cloneable
 		this.ultimo = ultimo;
 	}
 
-	public X getPrimeiro () throws Exception
+	public X getPrimeiro () throws NullPointerException
 	{
-		if (this.primeiro==null) throw new Exception ("Lista vazia");
-		
+		if (this.primeiro==null) throw new NullPointerException("Lista vazia");
+
 		X copia;
 		if (this.primeiro.getInfo() instanceof Cloneable)
 		    copia = new Clonador<X>().clone(this.primeiro.getInfo());
 		else
 		    copia = this.primeiro.getInfo();
-		    
+
 		return copia;
 	}
 
-	public X getUltimo () throws Exception
+	public X getUltimo () throws NullPointerException
 	{
-		if (this.ultimo==null) throw new Exception("");
+		if (this.ultimo==null) throw new NullPointerException("");
 
 		X copia;
 		if (this.ultimo.getInfo() instanceof Cloneable)
@@ -112,35 +112,35 @@ public class ListaEncadeadaSimplesDesordenada <X> implements Cloneable
 
 		return copia;
 	}
-	
+
 	public int getTamanho()
 	{
 		if(this.primeiro == null)
 		{
 			return 0;
 		}
-		
+
 		No atual = this.primeiro;
 		int elementos = 0;
-		
+
 		while(atual != null)
 		{
 				atual = atual.getProx();
 				elementos++;
 		}
-		
+
 		return elementos;
 	}
-	
+
 	// posições serão numeradas 0, 1, 2, etc
-	public void remova (int posicao) throws Exception
+	public void remova (int posicao) throws IndexOutOfBoundsException
 	{
 		if(posicao < 0 || posicao >= this.getTamanho())
 		{
 			throw new IndexOutOfBoundsException("Posição inválida!");
 		}
-			
-			
+
+
 		if(posicao == 0)
 		{
 			this.primeiro = this.primeiro.getProx();
@@ -149,25 +149,25 @@ public class ListaEncadeadaSimplesDesordenada <X> implements Cloneable
 			for(int i = 0; i < posicao - 1; i++){
 			    atual = atual.getProx();
 			}
-		
-			atual.setProx(atual.getProx().getProx()); 
+
+			atual.setProx(atual.getProx().getProx());
 		}
 	}
-	
+
 	public boolean tem (X i)
 	{
 		No atual=this.primeiro;
-		
+
 		while (atual!=null)
 		{
 			if (atual.getInfo().equals(i)) return true;
-			
+
 			atual=atual.getProx();
 		}
-		
+
 		return false;
 	}
-	
+
 	public void rotacao(int v) {
 		No atual = primeiro;
 		No ultimo = null;
@@ -188,19 +188,19 @@ public class ListaEncadeadaSimplesDesordenada <X> implements Cloneable
     public String toString ()
     {
 		if (this.primeiro==null) return "[]";
-		
+
 		String ret="[";
-		
+
 		ret+=this.primeiro.getInfo();
-		
+
 		No atual = this.primeiro.getProx();
-		
+
 		while (atual!=null)
 		{
 			ret+=", "+atual.getInfo();
 			atual=atual.getProx();
 		}
-		
+
 		return ret+"]";
 	}
 }

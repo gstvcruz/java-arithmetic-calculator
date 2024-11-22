@@ -5,21 +5,24 @@ public class Main {
     Scanner scanner = new Scanner(System.in);
 
     while (true) {
-      System.out.print("Enter expression (type 'exit' to quit): ");
-      String input = scanner.nextLine();
+      System.out.print("Insira a expressão (digite 'q' para sair): ");
+      String expression = scanner.nextLine();
 
-      if ("exit".equalsIgnoreCase(input)) {
-        System.out.println("Goodbye!");
+      if ("q".equalsIgnoreCase(expression)) {
         break;
       }
 
-      System.out.println("Result: ");
+      try {
+        new ExpressionValidator(expression).validate();
+        LinkedListQueue<String> RPNExpression = new ReversePolishNotationConverter(expression).convert();
+        Calculator calculator = new Calculator(RPNExpression);
+
+        System.out.println("\033[3m" + "Resultado: " + calculator.getResult() + "\033[0m");
+      } catch (Exception e) {
+        System.out.println(e.getMessage());
+      }
     }
 
     scanner.close();
-    NotationConverter nc = new NotationConverter(args[0]);
-    StringQueue postFixExp = nc.getPostFixNotation();
-    Calculator calculator = new Calculator(postFixExp);
-    System.out.println(calculator.getResult());
   }
 }
