@@ -2,46 +2,38 @@ public class ExpressionValidator {
   private final String expression;
 
   public ExpressionValidator(String expression) throws IllegalArgumentException {
-    if (expression == null) throw new IllegalArgumentException("Expressão vazia! Forneça uma expressão válida.");
+    if (expression.isBlank()) throw new IllegalArgumentException("Expressão vazia! Forneça uma expressão válida.");
     this.expression = expression;
   }
 
   public void validate() {
     if (containsInvalidCharacters()) {
-      throw new IllegalArgumentException(
-        "\033[31m" + "Valor e/ou operador inválidos encontrados!\nValores permitidos: 0-9\nOperadores permitidos: '+', '-', '*', '/', '^'" + "\033[0m"
-      );
+      throw new IllegalArgumentException("Valor e/ou operador inválidos!");
     }
     if (hasConsecutiveOperators()) {
-      throw new IllegalArgumentException(
-        "\033[31m" + "A expressão não pode conter um operador seguido de outro!" + "\033[0m"
-      );
+      throw new IllegalArgumentException("A expressão não pode conter um operador seguido de outro!");
     }
-    if (startsWithInvalidOperator()) {
-      throw new IllegalArgumentException(
-        "\033[31m" + "A expressão não pode iniciar com '*', '/' ou '^'!" + "\033[0m"
-      );
+    if (startsOrEndsWithArithmeticOperator()) {
+      throw new IllegalArgumentException("A expressão não pode iniciar/terminar com um operador!");
     }
     if (!areParenthesesCorrectlyEnclosedAndBalanced()) {
-      throw new IllegalArgumentException(
-        "\033[31m" + "Os parênteses na expressão não estão corretamente balanceados e/ou fechados!" + "\033[0m"
-      );
+      throw new IllegalArgumentException("Os parênteses na expressão não estão corretamente balanceados e/ou fechados!");
     }
   }
 
   private boolean containsInvalidCharacters() {
-    // Matches any character not allowed in the expression
-    return !expression.matches("^[0-9+\\-*/^()\\s]*$");
+    // Matches any character not allowed in the expression or invalid placement of `.`
+    return !expression.matches("^(\\s*[0-9]+(\\.[0-9]*)?|\\s*\\.[0-9]+|[+\\-*/^()\\s])*\\s*$");
   }
 
   private boolean hasConsecutiveOperators() {
-    // Matches two or more consecutive operators
-    return expression.matches(".*[+\\-*/^]{2,}.*");
+    // Matches two or more consecutive operators, with or without spaces between them
+    return expression.matches(".*[+\\-*/^]\\s*[+\\-*/^].*");
   }
 
-  private boolean startsWithInvalidOperator() {
-    // Matches expressions starting with '*', '/' or '^'
-    return expression.matches("^[*/^].*");
+  private boolean startsOrEndsWithArithmeticOperator() {
+    // Matches expressions starting or ending with arithmetic operators
+    return expression.matches("^[+\\-*/^].*") || expression.matches(".*[+\\-*/^]$");
   }
 
   private boolean areParenthesesCorrectlyEnclosedAndBalanced() {
@@ -54,7 +46,7 @@ public class ExpressionValidator {
       } else if (c == ')') {
         balance--; // Decrement for a closing parenthesis
         if (balance < 0) {
-          // If balance goes negative, there's a mismatch
+          // If balance ever goes negative, there's a closing parenthesis before an opening one
           return false;
         }
       }
